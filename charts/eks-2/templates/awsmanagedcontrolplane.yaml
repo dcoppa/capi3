@@ -1,0 +1,23 @@
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: AWSManagedControlPlane
+metadata:
+  labels:
+    {{- include "capieks.labels" . | nindent 4 }}
+  name: {{ .Values.cluster.name }}-control-plane
+spec:
+  addons:
+    - name: "aws-ebs-csi-driver"
+      version: "v1.35.0-eksbuild.1"
+      conflictResolution: "overwrite"
+  endpointAccess:
+    private: true
+    public: true
+  iamAuthenticatorConfig:
+    mapRoles:
+      - username: {{ regexFind "[^/]+$" .Values.cluster.admin_role_arn | quote }}
+        rolearn: {{ .Values.cluster.admin_role_arn | quote }}
+        groups:
+          - "system:masters"
+  region: {{ .Values.cluster.region }}
+  roleName: eks-controlplane.cluster-api-provider-aws.sigs.k8s.io
+  sshKeyName: {{ .Values.cluster.ssh_key_name }}

@@ -1,0 +1,11 @@
+gitrepo: https://github.com/dcoppa/capi3.git
+gitbranch: main
+project: capi
+apps:
+  - name: eks-3
+    order: 0
+    server: in-cluster
+  - name: argocd-cluster-3
+    namespace: argocd
+    order: 0
+    server: in-cluster
